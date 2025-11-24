@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Home - Lecture Companion{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <h1>Make lectures accessible, searchable, and less stressful.</h1>
+    <p>
+      This prototype transcribes classroom lectures, generates structured notes,
+      and offers a simple chatbot for follow up questions.
+    </p>
+    <div class="hero-actions">
+      {% if not user %}
+        <a href="{{ url_for('signup') }}" class="btn btn-large">Get started</a>
+        <a href="{{ url_for('login') }}" class="btn btn-outline btn-large">Log in</a>
+      {% else %}
+        <a href="{{ url_for('dashboard') }}" class="btn btn-large">Go to dashboard</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="hero-card">
+    <h2>How it works</h2>
+    <ol>
+      <li>Teacher logs in and creates a lecture from transcript.</li>
+      <li>System generates structured notes.</li>
+      <li>Students view notes and ask questions through the chatbot.</li>
+    </ol>
+  </div>
+</section>
+{% endblock %}

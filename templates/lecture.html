@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Lecture - {{ lecture.title }}{% endblock %}
+
+{% block content %}
+<div class="lecture-layout">
+  <section class="panel panel-wide">
+    <h2>{{ lecture.title }}</h2>
+    <p class="panel-subtitle">
+      Course: {{ lecture.course }}
+    </p>
+    <div class="lecture-columns">
+      <div class="lecture-column">
+        <h3>Transcript</h3>
+        <pre class="code-block">{{ lecture.transcript }}</pre>
+      </div>
+      <div class="lecture-column">
+        <h3>Generated notes</h3>
+        <pre class="code-block">{{ lecture.notes }}</pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h3>Ask a question</h3>
+    <p class="panel-subtitle">
+      This is a simple chatbot stub that can be replaced by a real AI backend.
+    </p>
+    <div id="chat-container" data-lecture-id="{{ lecture.id }}">
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-question" placeholder="Type your question here" />
+        <button id="chat-send" class="btn btn-small">Send</button>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}

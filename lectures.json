@@ -1,0 +1,19 @@
+{
+  "lectures": [
+    {
+      "id": 1,
+      "title": "first",
+      "transcript": "hello",
+      "notes": "# Key Points\n- hello",
+      "created_by": "aditi"
+    },
+    {
+      "id": 2,
+      "title": "SOLID Principles",
+      "course": "CS301",
+      "transcript": "Hello, this is test transcript",
+      "notes": "# Key Points\n- Hello, this is test transcript",
+      "created_by": "aditi"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "username": "dew",
+      "password_hash": "scrypt:32768:8:1$NErd8QyHm6H7NfRt$217406e9261d1518ca8669399dc4303b1080fda601a542f7adc95e91afee5e9fb957d32ba8373005da00788a4291e61bebfd73080c0e8af1f415eb31220107e2",
+      "role": "student"
+    },
+    {
+      "username": "aditi",
+      "password_hash": "scrypt:32768:8:1$3dJMfQLNm26c1F4D$2fa8ce1f1ffaaaa396813ab1796d243fe547061c1f3a35c7f2b7c04d615273ae0accf1dda63594191b4feef71c37e1e7379d0018b211cdbeaa25d4dceb82711f",
+      "role": "teacher"
+    }
+  ]
+}

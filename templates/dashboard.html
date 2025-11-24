@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Lecture Companion{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+  {% if role == "teacher" %}
+    <section class="panel panel-wide">
+      <h2>Create new lecture</h2>
+      <p class="panel-subtitle">
+        Paste a transcript for now. Later you can connect real speech to text.
+      </p>
+      <form method="post" action="{{ url_for('create_lecture') }}" class="form">
+        <label>
+          Lecture title
+          <input type="text" name="title" required />
+        </label>
+        <label>
+          Course name
+          <input type="text" name="course" placeholder="e.g. CS 301 - Software Engineering" required />
+        </label>
+        <label>
+          Transcript
+          <textarea name="transcript" rows="8" required></textarea>
+        </label>
+        <button type="submit" class="btn btn-full">Generate notes</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Your lectures</h2>
+      {% if lectures %}
+        <ul class="list">
+          {% for lecture in lectures %}
+            <li class="list-item">
+              <div>
+                <h3>{{ lecture.title }}</h3>
+                <span class="list-meta">
+                  Course: {{ lecture.course }}  ·  Lecture ID: {{ lecture.id }}
+                </span>
+              </div>
+              <a href="{{ url_for('lecture_view', lecture_id=lecture.id) }}" class="btn btn-outline-small">
+                Open
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No lectures yet.</p>
+      {% endif %}
+    </section>
+
+  {% else %}
+    <section class="panel">
+      <h2>Available lectures</h2>
+      {% if lectures %}
+        <ul class="list">
+          {% for lecture in lectures %}
+            <li class="list-item">
+              <div>
+                <h3>{{ lecture.title }}</h3>
+                <span class="list-meta">Created by {{ lecture.created_by }}</span>
+              </div>
+              <a href="{{ url_for('lecture_view', lecture_id=lecture.id) }}" class="btn btn-outline-small">
+                View
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No lectures have been added yet.</p>
+      {% endif %}
+    </section>
+  {% endif %}
+</div>
+{% endblock %}
