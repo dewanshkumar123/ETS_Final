@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ course_name }} - Lecture Companion{% endblock %}
+
+{% block content %}
+<div class="course-view">
+  <h1>{{ course_name }}</h1>
+
+  {% if lectures %}
+    <section class="panel">
+      <h2>Lectures in this course</h2>
+      <ul class="list">
+        {% for lecture in lectures %}
+        <li class="list-item">
+          <div>
+            <h3>{{ lecture.title }}</h3>
+            <span class="list-meta">Created by {{ lecture.created_by }}</span>
+          </div>
+          <a href="{{ url_for('lecture_view', lecture_id=lecture.id) }}" class="btn btn-outline-small">
+            View
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% else %}
+    <p>No lectures in this course yet.</p>
+  {% endif %}
+
+  <div style="margin-top: 2rem;">
+    <a href="{{ url_for('dashboard') }}" class="btn">Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

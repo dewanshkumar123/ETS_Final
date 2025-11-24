@@ -26,24 +26,16 @@
       </form>
     </section>
 
-    <section class="panel">
+    <section>
       <h2>Your lectures</h2>
-      {% if lectures %}
-        <ul class="list">
-          {% for lecture in lectures %}
-            <li class="list-item">
-              <div>
-                <h3>{{ lecture.title }}</h3>
-                <span class="list-meta">
-                  Course: {{ lecture.course }}  ·  Lecture ID: {{ lecture.id }}
-                </span>
-              </div>
-              <a href="{{ url_for('lecture_view', lecture_id=lecture.id) }}" class="btn btn-outline-small">
-                Open
-              </a>
-            </li>
+      {% if courses %}
+        <div class="courses-list">
+          {% for course_name, course_lectures in courses.items() %}
+          <div class="course-group">
+            <h3><a href="{{ url_for('course_view', course_name=course_name) }}" class="course-title">{{ course_name }}</a></h3>
+          </div>
           {% endfor %}
-        </ul>
+        </div>
       {% else %}
         <p>No lectures yet.</p>
       {% endif %}
@@ -52,20 +44,27 @@
   {% else %}
     <section class="panel">
       <h2>Available lectures</h2>
-      {% if lectures %}
-        <ul class="list">
-          {% for lecture in lectures %}
-            <li class="list-item">
-              <div>
-                <h3>{{ lecture.title }}</h3>
-                <span class="list-meta">Created by {{ lecture.created_by }}</span>
-              </div>
-              <a href="{{ url_for('lecture_view', lecture_id=lecture.id) }}" class="btn btn-outline-small">
-                View
-              </a>
-            </li>
+      {% if courses %}
+        <div class="courses-list">
+          {% for course_name, course_lectures in courses.items() %}
+          <div class="course-group">
+            <h3 class="course-title" onclick="toggleLectures('{{ course_name }}')">{{ course_name }}</h3>
+            <ul class="list" id="lectures-{{ course_name }}" style="display: none;">
+              {% for lecture in course_lectures %}
+              <li class="list-item">
+                <div>
+                  <h3>{{ lecture.title }}</h3>
+                  <span class="list-meta">Created by {{ lecture.created_by }}</span>
+                </div>
+                <a href="{{ url_for('lecture_view', lecture_id=lecture.id) }}" class="btn btn-outline-small">
+                  View
+                </a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
           {% endfor %}
-        </ul>
+        </div>
       {% else %}
         <p>No lectures have been added yet.</p>
       {% endif %}

@@ -109,10 +109,19 @@ def dashboard():
   if role == "teacher":
     # Show lectures created by this teacher
     my_lectures = [lec for lec in lectures if lec["created_by"] == username]
-    return render_template("dashboard.html", role=role, lectures=my_lectures)
+  else:
+    # student view: show all lectures
+    my_lectures = lectures
 
-  # student view: show all lectures for now
-  return render_template("dashboard.html", role=role, lectures=lectures)
+  # Group lectures by course
+  courses = {}
+  for lec in my_lectures:
+    course = lec.get("course", "Uncategorized")
+    if course not in courses:
+      courses[course] = []
+    courses[course].append(lec)
+
+  return render_template("dashboard.html", role=role, courses=courses)
 
 
 @app.route("/create_lecture", methods=["POST"])
@@ -181,6 +190,23 @@ def lecture_view(lecture_id):
     return redirect(url_for("dashboard"))
 
   return render_template("lecture.html", lecture=lecture)
+
+
+@app.route("/course/<course_name>")
+@login_required
+def course_view(course_name):
+  lectures_data = load_json(LECTURES_FILE, {"lectures": []})
+  lectures = lectures_data["lectures"]
+
+  role = session.get("role")
+  username = session.get("username")
+
+  if role == "teacher":
+    course_lectures = [lec for lec in lectures if lec["created_by"] == username and lec.get("course") == course_name]
+  else:
+    course_lectures = [lec for lec in lectures if lec.get("course") == course_name]
+
+  return render_template("course.html", course_name=course_name, lectures=course_lectures)
 
 
 

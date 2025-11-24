@@ -3,6 +3,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (chatContainer) {
     setupChat(chatContainer);
   }
+  var toggleBtn = document.getElementById("toggle-transcript");
+  if (toggleBtn) {
+    setupTranscriptToggle(toggleBtn);
+  }
 });
 
 function setupChat(chatContainer) {
@@ -57,4 +61,38 @@ function sendQuestion(lectureId, question, callback) {
     .catch(function () {
       callback("Error contacting server.");
     });
+}
+
+function toggleLectures(courseName) {
+  var lecturesEl = document.getElementById("lectures-" + courseName);
+  if (lecturesEl.style.display === "none" || lecturesEl.style.display === "") {
+    lecturesEl.style.display = "block";
+  } else {
+    lecturesEl.style.display = "none";
+  }
+}
+
+function setupTranscriptToggle(btn) {
+  var notesContent = document.getElementById("notes-content");
+  var transcriptContent = document.getElementById("transcript-content");
+  if (!notesContent || !transcriptContent) return;
+
+  var showingTranscript = false;
+
+  btn.addEventListener("click", function () {
+    if (!showingTranscript) {
+      // Replace notes area with transcript content (only update notes panel)
+      notesContent.dataset.prev = notesContent.innerHTML;
+      notesContent.innerHTML = transcriptContent.innerHTML;
+      btn.textContent = "Show Notes";
+    } else {
+      // Restore previous notes
+      if (notesContent.dataset.prev !== undefined) {
+        notesContent.innerHTML = notesContent.dataset.prev;
+        delete notesContent.dataset.prev;
+      }
+      btn.textContent = "Show Transcript";
+    }
+    showingTranscript = !showingTranscript;
+  });
 }
