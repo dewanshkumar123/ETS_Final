@@ -2,6 +2,7 @@
 {% block title %}Lecture - {{ lecture.title }}{% endblock %}
 
 {% block content %}
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 <div class="lecture-layout">
   <section class="panel panel-wide">
     <h2>{{ lecture.title }}</h2>
@@ -29,11 +30,49 @@
     <!-- Notes Section - Right Side -->
     <section class="panel lecture-notes-panel">
       <div class="notes-header">
-        <h3>Generated Notes</h3>
-        <button id="toggle-transcript" class="btn btn-outline-small">Show Transcript</button>
+        <h3>Notes</h3>
+        <div class="notes-actions">
+          <button id="toggle-transcript" class="btn btn-outline-small">Show Transcript</button>
+          <button id="zoom-notes" class="btn btn-outline-small" title="Fullscreen Editor">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+            </svg>
+          </button>
+        </div>
       </div>
-      <div id="notes-content" class="notes-content">
-        <div class="formatted-notes">{{ lecture.notes | replace('\n', '<br>') | safe }}</div>
+      <div id="notes-content" class="notes-content" style="display: block;">
+        <div class="notes-toolbar-wrapper">
+          <div id="toolbar" class="ql-toolbar ql-snow">
+            <span class="ql-formats">
+              <button class="ql-bold" title="Bold"></button>
+              <button class="ql-italic" title="Italic"></button>
+              <button class="ql-underline" title="Underline"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-list" value="ordered" title="Ordered List"></button>
+              <button class="ql-list" value="bullet" title="Bullet List"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-link" title="Insert Link"></button>
+              <select class="ql-header" title="Heading">
+                <option value="1">H1</option>
+                <option value="2">H2</option>
+                <option value="3">H3</option>
+                <option selected>Normal</option>
+              </select>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-image" title="Insert Image"></button>
+              <button class="ql-code-block" title="Code Block"></button>
+              <button class="ql-blockquote" title="Quote"></button>
+            </span>
+            <span class="ql-formats">
+              <button class="ql-clean" title="Clear Formatting"></button>
+            </span>
+          </div>
+          <button id="save-notes-btn" class="btn btn-small" title="Save Your Notes">Save</button>
+        </div>
+        <div id="editor" class="editor-container" data-lecture-id="{{ lecture.id }}" data-notes="{{ lecture.notes | escape }}"></div>
       </div>
       <div id="transcript-content" class="transcript-content" style="display: none;">
         <h4>Transcript</h4>
@@ -42,4 +81,24 @@
     </section>
   </div>
 </div>
+
+<!-- Fullscreen Editor Modal -->
+<div id="fullscreen-editor-modal" class="fullscreen-modal" style="display: none;">
+  <div class="fullscreen-editor-container">
+    <div class="fullscreen-editor-header">
+      <h2>Notes Editor - Fullscreen</h2>
+      <div class="fullscreen-header-actions">
+        <button id="close-fullscreen" class="btn btn-outline-small" title="Close Fullscreen">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div id="fullscreen-editor" class="fullscreen-editor ql-editor"></div>
+  </div>
+</div>
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 {% endblock %}

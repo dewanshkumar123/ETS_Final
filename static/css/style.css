@@ -59,9 +59,10 @@ a {
 
 .main-content {
   flex: 1;
-  padding: 1.8rem 1.8rem 2.2rem;
-  max-width: 1080px;
+  padding: 1.8rem 2rem 2.2rem;
+  max-width: 1000px;
   margin: 0 auto;
+  width: 100%;
 }
 
 .footer {
@@ -112,6 +113,7 @@ a {
 
 .btn-full {
   width: 100%;
+  margin-top: 4rem;
 }
 
 .btn-small,
@@ -124,6 +126,13 @@ a {
   border-radius: 999px;
   border: 1px solid rgba(15, 23, 42, 0.18);
   background: transparent;
+  color: #111827;
+  font-weight: 500;
+}
+
+.btn-outline-small:hover {
+  background-color: rgba(15, 23, 42, 0.05);
+  border-color: rgba(15, 23, 42, 0.3);
 }
 
 /* Hero */
@@ -239,14 +248,14 @@ textarea {
 
 .dashboard {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1.5fr);
-  gap: 1.4rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
 }
 
 .panel {
   background-color: #ffffff;
   border-radius: 1.25rem;
-  padding: 1.15rem 1.3rem;
+  padding: 1.5rem 1.8rem;
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
   border: 1px solid rgba(148, 163, 184, 0.35);
 }
@@ -348,16 +357,18 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .lecture-main-content {
   display: grid;
-  /* Make the chat (left) wider and notes (right) use remaining space */
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 1.4rem;
+  /* Chat on left (full width split), Notes on right (full width split) */
+  grid-template-columns: 1fr 1.8fr;
+  gap: 1.5rem;
   align-items: stretch;
-  /* give the main area some vertical room so left/right panels can expand */
-  min-height: 60vh;
+  flex: 1;
+  min-height: 0;
 }
 
 .lecture-chat-panel {
@@ -366,6 +377,8 @@ textarea {
   flex-direction: column;
   height: 100%;
   min-height: 0;
+  border-right: none;
+  padding: 1.5rem;
 }
 
 .lecture-notes-panel {
@@ -373,67 +386,572 @@ textarea {
   display: flex;
   flex-direction: column;
   height: 100%;
+  min-height: 0;
+  padding: 1.5rem;
 }
 
 .notes-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
+  gap: 0.8rem;
+  padding: 0;
 }
 
 .notes-header h3 {
   margin: 0;
+  font-size: 1.1rem;
+}
+
+.notes-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .notes-content {
   flex: 1;
   overflow-y: auto;
   min-height: 0;
+  background-color: transparent;
+  border-radius: 0;
+  border: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.notes-toolbar-wrapper {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.notes-toolbar-wrapper .ql-toolbar {
+  flex: 1;
+  margin: 0;
+}
+
+#save-notes-btn {
+  margin-top: 0;
+  flex-shrink: 0;
+}
+
+.editor-container {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  background: white;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+}
+
+.ql-toolbar.ql-snow {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: #f9fafb;
+  padding: 0.5rem;
+}
+
+.editor-container .ql-editor {
+  padding: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  background: white;
+  min-height: 300px;
+}
+
+.editor-container .ql-editor.ql-blank::before {
+  color: #9ca3af;
+}
+
+/* Read-only mode */
+.editor-container.read-only .ql-editor {
+  background: white;
+}
+
+.editor-container.read-only .ql-toolbar {
+  display: none !important;
+}
+
+/* Edited/Added content styling */
+.ql-editor .student-note {
+  background-color: #fef3c7;
+  color: #92400e;
+  padding: 0.2rem 0.3rem;
+  border-radius: 0.2rem;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.ql-editor .student-note::before {
+  content: "[Your Note] ";
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+.fullscreen-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  background: white;
+}
+
+.fullscreen-editor-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.fullscreen-header-actions {
+  display: flex;
+  gap: 0.8rem;
+}
+
+/* Student added content styling */
+.ql-editor .student-added {
+  background-color: #fef08a;
+  color: #713f12;
+  font-weight: 500;
+  padding: 0.1rem 0.2rem;
+  border-radius: 0.2rem;
+}
+
+.ql-editor em.student-added {
+  font-style: italic;
+  font-weight: 500;
+}
+
+/* Image styling in editor */
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0.8rem 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ql-editor .ql-image {
+  display: block;
 }
 
 .formatted-notes {
-  line-height: 1.6;
+  line-height: 1.8;
   white-space: pre-wrap;
   font-family: inherit;
   font-size: 0.95rem;
+  word-wrap: break-word;
+  color: #1f2937;
+  padding: 0;
 }
 
 .transcript-content {
-  margin-top: 1rem;
+  margin-top: 0;
+  padding: 1.5rem;
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  display: none;
 }
 
 .transcript-content h4 {
   margin-top: 0;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
   color: #4f46e5;
   font-weight: 600;
+  font-size: 1rem;
 }
 
 .code-block {
   background-color: #0f172a;
   color: #e5e7eb;
-  border-radius: 0.85rem;
-  padding: 0.8rem 0.9rem;
+  border-radius: 0.75rem;
+  padding: 1rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
     monospace;
-  font-size: 0.84rem;
-  max-height: 260px;
+  font-size: 0.82rem;
   overflow: auto;
+  line-height: 1.5;
+}
+
+/* Rich Text Editor */
+
+.editor-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Original Notes Section */
+
+.original-notes {
+  flex: 1;
+  overflow-y: auto;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem;
+  background: white;
+}
+
+.original-notes-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #4f46e5;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.original-content {
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+.original-content h1 {
+  font-size: 1.5rem;
+  margin: 0.8rem 0 0.4rem 0;
+  font-weight: 700;
+}
+
+.original-content h2 {
+  font-size: 1.25rem;
+  margin: 0.6rem 0 0.4rem 0;
+  font-weight: 600;
+}
+
+.original-content h3 {
+  font-size: 1.1rem;
+  margin: 0.6rem 0 0.3rem 0;
+  font-weight: 600;
+}
+
+.original-content p {
+  margin: 0.5rem 0;
+}
+
+.original-content strong {
+  font-weight: 700;
+}
+
+.original-content em {
+  font-style: italic;
+}
+
+.original-content ul,
+.original-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.original-content li {
+  margin: 0.25rem 0;
+}
+
+/* Student Notes Section */
+
+.student-notes-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #10b981;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.btn-text-small {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  text-transform: capitalize;
+}
+
+.btn-text-small:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+.student-toolbar {
+  margin: 0;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-bottom: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: #f9fafb;
+}
+
+.student-editor {
+  flex: 1;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-top: none;
+  border-radius: 0 0 0.5rem 0.5rem;
+  background: white;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.student-editor .ql-editor {
+  padding: 1rem;
+  height: 100%;
+  background-color: #fafbfc;
+}
+
+.student-editor .ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Quill Editor Toolbar Styling */
+
+.ql-toolbar {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 0.5rem 0.5rem 0 0;
+  background: #f9fafb;
+}
+
+.ql-toolbar.ql-snow {
+  padding: 0.5rem;
+}
+
+.ql-toolbar button:hover,
+.ql-toolbar button.ql-active,
+.ql-toolbar select:hover,
+.ql-toolbar select.ql-active {
+  color: #4f46e5;
+}
+
+.ql-toolbar button svg {
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+.ql-editor {
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.ql-editor.ql-blank::before {
+  color: #9ca3af;
+}
+
+#editor {
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+#editor h1 {
+  font-size: 2rem;
+  margin: 0.5rem 0;
+  font-weight: 700;
+}
+
+#editor h2 {
+  font-size: 1.5rem;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+#editor h3 {
+  font-size: 1.25rem;
+  margin: 0.5rem 0;
+  font-weight: 600;
+}
+
+#editor p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+#editor strong {
+  font-weight: 700;
+}
+
+#editor em {
+  font-style: italic;
+}
+
+#editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+#editor ul,
+#editor ol {
+  margin: 0.5rem 0;
+  padding-left: 2rem;
+}
+
+#editor li {
+  margin: 0.25rem 0;
+}
+
+#editor blockquote {
+  border-left: 4px solid #4f46e5;
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+  color: #6b7280;
+}
+
+#editor code {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+#editor pre {
+  background-color: #0f172a;
+  color: #e5e7eb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+
+/* Fullscreen Modal */
+
+.fullscreen-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: white;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.fullscreen-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.fullscreen-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.3);
+  background: white;
+}
+
+.fullscreen-editor-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.fullscreen-editor-header button {
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fullscreen-editor {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  background: white;
+}
+
+.fullscreen-editor h1 {
+  font-size: 2.5rem;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 700;
+}
+
+.fullscreen-editor h2 {
+  font-size: 2rem;
+  margin: 0.8rem 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.fullscreen-editor h3 {
+  font-size: 1.5rem;
+  margin: 0.8rem 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.fullscreen-editor p {
+  margin: 0.8rem 0;
+  line-height: 1.8;
+  font-size: 1.05rem;
+}
+
+.fullscreen-editor img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.fullscreen-editor ul,
+.fullscreen-editor ol {
+  margin: 1rem 0;
+  padding-left: 2.5rem;
+}
+
+.fullscreen-editor li {
+  margin: 0.5rem 0;
+  line-height: 1.8;
+}
+
+.fullscreen-editor code {
+  background-color: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9em;
+  color: #d91e63;
+}
+
+.fullscreen-editor pre {
+  background-color: #0f172a;
+  color: #e5e7eb;
+  padding: 1.2rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 1rem 0;
+  border: 1px solid rgba(229, 231, 235, 0.1);
+}
+
+.fullscreen-editor pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
 }
 
 /* Chat */
 
 .chat-messages {
   background-color: #f9fafb;
-  border-radius: 0.8rem;
-  padding: 0.7rem 0.8rem;
-  border: 1px solid rgba(148, 163, 184, 0.6);
-  /* allow chat area to grow to fill available space inside the panel */
+  border-radius: 0.75rem;
+  padding: 0.8rem;
+  border: 1px solid rgba(148, 163, 184, 0.4);
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
   font-size: 0.88rem;
+  margin-bottom: 0.6rem;
 }
 
 .chat-message {
@@ -452,8 +970,19 @@ textarea {
 
 .chat-input-row {
   display: flex;
-  gap: 0.5rem;
-  margin-top: 0.6rem;
+  gap: 0.6rem;
+  margin-top: 0;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+input[type="text"]#chat-question {
+  flex: 1;
+  min-width: 0;
+}
+
+#chat-send {
+  flex-shrink: 0;
 }
 
 /* Flash messages */

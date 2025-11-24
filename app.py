@@ -110,7 +110,7 @@ def dashboard():
     # Show lectures created by this teacher
     my_lectures = [lec for lec in lectures if lec["created_by"] == username]
   else:
-    # student view: show all lectures
+    # student view: show all courses by all teachers
     my_lectures = lectures
 
   # Group lectures by course
@@ -189,6 +189,27 @@ def lecture_view(lecture_id):
     flash("Lecture not found.", "error")
     return redirect(url_for("dashboard"))
 
+  role = session.get("role")
+  username = session.get("username")
+  
+  # Auto-enroll student in the course when accessing lecture
+  if role == "student":
+    course = lecture.get("course", "Uncategorized")
+    
+    if not data.get("enrollments"):
+      data["enrollments"] = []
+    
+    # Check if already enrolled
+    already_enrolled = any(e.get("student") == username and e.get("course") == course 
+                           for e in data["enrollments"])
+    
+    if not already_enrolled:
+      data["enrollments"].append({
+        "student": username,
+        "course": course
+      })
+      save_json(LECTURES_FILE, data)
+
   return render_template("lecture.html", lecture=lecture)
 
 
@@ -204,9 +225,46 @@ def course_view(course_name):
   if role == "teacher":
     course_lectures = [lec for lec in lectures if lec["created_by"] == username and lec.get("course") == course_name]
   else:
+    # For students, show all lectures in this course
     course_lectures = [lec for lec in lectures if lec.get("course") == course_name]
 
   return render_template("course.html", course_name=course_name, lectures=course_lectures)
+
+
+@app.route("/api/enroll/<int:lecture_id>", methods=["POST"])
+@login_required
+def enroll_student(lecture_id):
+  """Enroll a student in a lecture's course (or auto-enroll on first access)"""
+  username = session.get("username")
+  role = session.get("role")
+  
+  data = load_json(LECTURES_FILE, {"lectures": []})
+  lecture = next((lec for lec in data["lectures"] if lec["id"] == lecture_id), None)
+  
+  if not lecture:
+    return jsonify({"error": "Lecture not found"}), 404
+  
+  # Students can view any lecture they're enrolled in - auto-enroll them when accessing
+  if role == "student":
+    course = lecture.get("course", "Uncategorized")
+    
+    if not data.get("enrollments"):
+      data["enrollments"] = []
+    
+    # Check if already enrolled
+    already_enrolled = any(e.get("student") == username and e.get("course") == course 
+                           for e in data["enrollments"])
+    
+    if not already_enrolled:
+      data["enrollments"].append({
+        "student": username,
+        "course": course
+      })
+      save_json(LECTURES_FILE, data)
+    
+    return jsonify({"success": True})
+  
+  return jsonify({"error": "Unauthorized"}), 403
 
 
 
@@ -237,6 +295,51 @@ def chat_api(lecture_id):
   )
 
   return jsonify({"answer": answer})
+
+
+@app.route("/api/lecture/<int:lecture_id>/notes", methods=["GET"])
+@login_required
+def get_lecture_notes(lecture_id):
+  """Get student's saved notes for a lecture"""
+  username = session.get("username")
+  data = load_json(LECTURES_FILE, {"lectures": []})
+  lecture = next((lec for lec in data["lectures"] if lec["id"] == lecture_id), None)
+  
+  if not lecture:
+    return jsonify({"error": "Lecture not found"}), 404
+  
+  # Get user's notes
+  if not lecture.get("student_notes"):
+    lecture["student_notes"] = {}
+  
+  user_notes = lecture["student_notes"].get(username)
+  
+  return jsonify({"notes": user_notes})
+
+
+@app.route("/api/lecture/<int:lecture_id>/notes", methods=["POST"])
+@login_required
+def save_lecture_notes(lecture_id):
+  """Save student's notes for a lecture"""
+  username = session.get("username")
+  notes = request.json.get("notes")
+  
+  data = load_json(LECTURES_FILE, {"lectures": []})
+  lecture = next((lec for lec in data["lectures"] if lec["id"] == lecture_id), None)
+  
+  if not lecture:
+    return jsonify({"error": "Lecture not found"}), 404
+  
+  # Initialize student_notes if not present
+  if not lecture.get("student_notes"):
+    lecture["student_notes"] = {}
+  
+  # Save user's notes
+  lecture["student_notes"][username] = notes
+  
+  save_json(LECTURES_FILE, data)
+  
+  return jsonify({"success": True})
 
 
 if __name__ == "__main__":
